@@ -1,12 +1,12 @@
-# Fase de construcción (build)
-FROM maven:3.8.6-openjdk-17.0.1 AS builder
+# Fase de construcción
+FROM maven:3.8.6-openjdk-17 AS builder  # ← Usa solo '17' en lugar de '17.0.1'
 WORKDIR /app
 COPY pom.xml .
 COPY src ./src
 RUN mvn package -DskipTests
 
-# Fase de ejecución (runtime)
-FROM openjdk:17.0.1-jdk-slim
+# Fase de ejecución
+FROM openjdk:17-jdk-slim   
 EXPOSE 8080
 COPY --from=builder /app/target/*.jar app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]
