@@ -1,6 +1,12 @@
-FROM container-registry.oracle.com/java/jdk:17.0.1
+# Fase de construcción (build)
+FROM maven:3.8.6-openjdk-17 AS builder
 WORKDIR /app
-COPY . .
-RUN ./mvnw package -DskipTests  # Usa el Maven Wrapper
+COPY pom.xml .
+COPY src ./src
+RUN mvn package -DskipTests
+
+# Fase de ejecución (runtime)
+FROM openjdk:17-jdk-slim
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "target/your-app.jar"]
+COPY --from=builder /app/target/*.jar app.jar
+ENTRYPOINT ["java", "-jar", "app.jar"]
