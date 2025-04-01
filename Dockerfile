@@ -1,5 +1,5 @@
 # Fase de construcción
-FROM maven:3.8.6-openjdk-17 AS builder  # ← Usa solo '17' en lugar de '17.0.1'
+FROM maven:3.8.6-openjdk-17 AS builder 
 WORKDIR /app
 COPY pom.xml .
 COPY src ./src
