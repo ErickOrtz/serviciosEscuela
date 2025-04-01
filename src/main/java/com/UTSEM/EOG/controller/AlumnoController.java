@@ -22,6 +22,11 @@ public class AlumnoController {
 	@Autowired
 	AlumnoService alumnoService;
 
+    @GetMapping("/test")
+    public String test() {
+        return "¡La API está funcionando!";
+    }
+
 	@GetMapping("/listar")
 	public List<Alumno> postMethodLitar() {
 
