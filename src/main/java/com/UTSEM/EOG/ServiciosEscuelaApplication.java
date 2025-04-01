@@ -18,7 +18,7 @@ public class ServiciosEscuelaApplication {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**").allowedOrigins("http://127.0.0.1:4200", "http://localhost:4200")
+				registry.addMapping("/**").allowedOrigins("*")
 						.allowedMethods("*").allowedHeaders("*").allowCredentials(true);
 			}
 		};
