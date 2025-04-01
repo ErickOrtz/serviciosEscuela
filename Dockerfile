@@ -1,15 +1,22 @@
-FROM ubuntu:22.04 AS build
-RUN apt-get update && \
-    apt-get install -y wget unzip && \
-    wget https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.7%2B7/OpenJDK17U-jdk_x64_linux_hotspot_17.0.7_7.tar.gz && \
-    tar -xzf OpenJDK17U-jdk_x64_linux_hotspot_17.0.7_7.tar.gz -C /opt && \
-    export JAVA_HOME=/opt/jdk-17.0.7+7 && \
-    export PATH=$JAVA_HOME/bin:$PATH
 
+# Fase de construcción con Gradle y JDK 17
+FROM gradle:7.6.1-jdk17 AS build
 WORKDIR /app
-COPY . .
-RUN ./gradlew build --no-daemon  # Usa el wrapper de Gradle
 
+# 1. Copia SOLO los archivos necesarios para Gradle (evita copiar carpetas innecesarias)
+COPY gradlew .
+COPY gradle/wrapper/ gradle/wrapper/
+COPY build.gradle .
+COPY settings.gradle .
+COPY src ./src
+
+# 2. Dale permisos de ejecución al wrapper (solo en Linux/macOS)
+RUN chmod +x gradlew
+
+# 3. Construye el proyecto
+RUN ./gradlew build --no-daemon
+
+# Fase de ejecución (imagen ligera)
 FROM eclipse-temurin:17-jre-jammy
 EXPOSE 8080
 COPY --from=build /app/target/serviciosEscuela-*.jar app.jar
