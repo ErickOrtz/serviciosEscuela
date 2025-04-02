@@ -1,5 +1,14 @@
-FROM openjdk:17-jdk-slim
-ARG ${JAR_FILE}=target/serviciosEscuela-0.0.1-SNAPSHOT.jar
-COPY ${JAR_FILE} serviciosEscuela.jar
+# Usa una imagen con OpenJDK
+FROM eclipse-temurin:17-jdk-alpine
+
+# Directorio de trabajo
+WORKDIR /serviciosEscuela
+
+# Copia el JAR construido
+COPY target/serviciosEscuela-0.0.1-SNAPSHOT.jar app.jar
+
+# Puerto expuesto (debe coincidir con server.port)
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/${serviciosEscuela-0.0.1-SNAPSHOT.jar}"]
+
+# Comando para ejecutar la aplicación
+ENTRYPOINT ["java", "-jar", "app.jar"]
